@@ -11,6 +11,8 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 
 void ACatBase::Attack()
 {
@@ -32,4 +34,5 @@ void ACatBase::SetupPlayerInputComponent(class UInputComponent* PlayerInputCompo
 	}
 
 }
+
 

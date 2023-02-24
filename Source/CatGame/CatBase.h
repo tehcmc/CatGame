@@ -21,8 +21,13 @@ class CATGAME_API ACatBase : public ACatGameCharacter
 	/** Jump Input Action */
 protected:
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "FX")
+		class UNiagaraSystem* Particles;
+
+
 void Attack();
 
 virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
 
 };
