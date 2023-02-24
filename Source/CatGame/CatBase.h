@@ -18,6 +18,10 @@ class CATGAME_API ACatBase : public ACatGameCharacter
 		/** Jump Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* AttackAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* InteractAction;
+
 	/** Jump Input Action */
 protected:
 
@@ -26,6 +30,8 @@ protected:
 
 
 void Attack();
+
+void Interact();
 
 virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 

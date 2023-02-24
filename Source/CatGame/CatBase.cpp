@@ -19,6 +19,13 @@ void ACatBase::Attack()
 	GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Blue, FString::Printf(TEXT("ATTACKED")));
 }
 
+
+
+void ACatBase::Interact()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Green, FString::Printf(TEXT("Interact")));
+}
+
 void ACatBase::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
@@ -29,7 +36,7 @@ void ACatBase::SetupPlayerInputComponent(class UInputComponent* PlayerInputCompo
 		//Attack
 		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &ACatBase::Attack);
 
-
+		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Triggered, this, &ACatBase::Interact);
 
 	}
 
