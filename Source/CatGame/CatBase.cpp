@@ -12,7 +12,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
-
+#
 
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
@@ -26,7 +26,10 @@ ACatBase::ACatBase()
 
 void ACatBase::BeginPlay()
 {
+	//call inherited begin play function
 	Super::BeginPlay();
+	//do new stuff here
+
 
 	
 }
@@ -62,6 +65,8 @@ void ACatBase::Attack()
 void ACatBase::Interact()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Green, FString::Printf(TEXT("Interact")));
+
+	//todo - line trace to interact, create new interactive class ie door, tv, some other stuff
 }
 
 void ACatBase::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
