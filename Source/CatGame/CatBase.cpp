@@ -12,7 +12,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
-#
+#include "ItemBase.h"
 
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
@@ -42,14 +42,15 @@ void ACatBase::Attack()
 	PushSphere->GetOverlappingActors(OverlappingActors);
 
 	FVector PushDirection = GetActorForwardVector();
-
+	
 
 	for (AActor* Actor : OverlappingActors)
 	{
-		if (Actor != this)
+		AItemBase* tempActor = Cast<AItemBase>(Actor);
+		if (tempActor)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow, Actor->GetFName().ToString());
-			UPrimitiveComponent* Primitive = Actor->FindComponentByClass<UPrimitiveComponent>();
+			GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow, tempActor->GetFName().ToString());
+			UPrimitiveComponent* Primitive = tempActor->FindComponentByClass<UPrimitiveComponent>();
 			if (Primitive)
 			{
 				Primitive->AddImpulse(PushDirection * PushForce, NAME_None, true);
