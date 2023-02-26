@@ -53,6 +53,10 @@ void ACatBase::Attack()
 			UPrimitiveComponent* Primitive = tempActor->FindComponentByClass<UPrimitiveComponent>();
 			if (Primitive)
 			{
+
+				float randPush;
+				randPush= FMath::RandRange(PushForce, (PushForce*1.5f));
+
 				Primitive->AddImpulse(PushDirection * PushForce, NAME_None, true);
 			}
 		}

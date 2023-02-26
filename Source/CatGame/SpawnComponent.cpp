@@ -19,7 +19,7 @@ void USpawnComponent::BeginPlay()
 	Super::BeginPlay();
 	AItemBase* itemspawn =nullptr;
 
-	if (ItemPool.Num() != 0)
+	if (ItemPool.Num() != 0) //make sure array is not empty
 	{
 		int selectedProp = FMath::RandRange(0, ItemPool.Num() - 1);
 
