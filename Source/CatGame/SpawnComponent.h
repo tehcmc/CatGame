@@ -28,6 +28,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Config")
 	TSubclassOf<class AItemBase> spawnItem;
 
+
+	UPROPERTY(EditAnywhere)
+		TArray<TSubclassOf<class AItemBase>> ItemPool;
 //	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 //	class USphereComponent* SpawnArea;
 

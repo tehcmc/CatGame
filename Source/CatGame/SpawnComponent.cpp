@@ -18,7 +18,17 @@ void USpawnComponent::BeginPlay()
 	FActorSpawnParameters ActorSpawnParams;
 	Super::BeginPlay();
 	AItemBase* itemspawn =nullptr;
-	itemspawn = GetWorld()->SpawnActor<AItemBase>(spawnItem, GetComponentLocation(), myRot);
+
+	if (ItemPool.Num() != 0)
+	{
+		int selectedProp = FMath::RandRange(0, ItemPool.Num() - 1);
+
+		spawnItem = ItemPool[selectedProp];
+		GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Blue, FString::Printf(TEXT("Array size %i"), selectedProp));
+		itemspawn = GetWorld()->SpawnActor<AItemBase>(spawnItem, GetComponentLocation(), myRot);
+
+	}
+	
 
 	// ...
 	
