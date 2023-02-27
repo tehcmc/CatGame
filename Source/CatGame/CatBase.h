@@ -28,21 +28,39 @@ class CATGAME_API ACatBase : public ACatGameCharacter
 protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "FX")
-		class UNiagaraSystem* Particles;
+	class UNiagaraSystem* Particles;
 
 	UPROPERTY(EditAnywhere, Category = "Config")
-	float PushForce = 1000.f;
+	float pushForce = 1000.f;
+
+	UPROPERTY(EditAnywhere, Category = "Config")
+	float interactRange = 100.f;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
-		class USphereComponent* PushSphere;
+	class USphereComponent* PushSphere;
 
-virtual void BeginPlay() override;
+	// cat's mouth, used to attach pickups, also origin for line trace
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+	class USphereComponent* MouthAttachment;
+
+	FCollisionQueryParams Parameters;
+
+	virtual void BeginPlay() override;
 
 void Attack();
+
+virtual void Tick(float DeltaTime) override;
+
+void PickUp();
+
+
 
 void Interact();
 
 virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+
+bool LineTraceMethod(FHitResult& OutHit);
 
 
 };

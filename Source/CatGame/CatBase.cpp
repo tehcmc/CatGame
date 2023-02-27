@@ -13,15 +13,24 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "ItemBase.h"
+#include "InteractibleBase.h"
 
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
+
 ACatBase::ACatBase()
 {
 	PushSphere = CreateDefaultSubobject<USphereComponent>("PushSphere");
 	PushSphere->SetSphereRadius(200.f);
 	PushSphere->SetCollisionProfileName("OverlapAll");
 	PushSphere->SetupAttachment(GetRootComponent());
+
+	MouthAttachment = CreateDefaultSubobject<USphereComponent>("Mouth Attachment");
+	MouthAttachment->SetSphereRadius(10.f);
+	MouthAttachment->SetCollisionProfileName("OverlapAll");
+	MouthAttachment->SetupAttachment(GetRootComponent());
+
+	Parameters.AddIgnoredActor(this);
 }
 
 void ACatBase::BeginPlay()
@@ -29,8 +38,7 @@ void ACatBase::BeginPlay()
 	//call inherited begin play function
 	Super::BeginPlay();
 	//do new stuff here
-
-
+	
 	
 }
 
@@ -55,9 +63,9 @@ void ACatBase::Attack()
 			{
 
 				float randPush;
-				randPush= FMath::RandRange(PushForce, (PushForce*1.5f));
+				randPush= FMath::RandRange(pushForce, (pushForce*1.5f));
 
-				Primitive->AddImpulse(PushDirection * PushForce, NAME_None, true);
+				Primitive->AddImpulse(PushDirection * pushForce, NAME_None, true);
 			}
 		}
 		
@@ -67,9 +75,52 @@ void ACatBase::Attack()
 
 
 
+void ACatBase::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	FVector startPoint = MouthAttachment->GetComponentLocation();
+	FVector endpoint = (MouthAttachment->GetForwardVector() * interactRange) + startPoint;
+
+	DrawDebugLine(GetWorld(),startPoint,endpoint,FColor(255, 0, 0),false, -1, 0,5);
+
+}
+
+void ACatBase::PickUp()
+{
+//when cat interacts with an object that can be picked up call this function
+
+}
+
+bool ACatBase::LineTraceMethod(FHitResult& OutHit)
+{
+		FVector startPoint = MouthAttachment->GetComponentLocation();
+		FVector endpoint = (MouthAttachment->GetForwardVector() * interactRange) + startPoint;
+		
+		
+		return GetWorld()->LineTraceSingleByChannel(OutHit, startPoint, endpoint, ECC_Visibility, Parameters);
+}
+
 void ACatBase::Interact()
 {
+
+	FHitResult checkLine;
+
 	GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Green, FString::Printf(TEXT("Interact")));
+
+	LineTraceMethod(checkLine);
+
+	AInteractibleBase* tempInteractible;
+	tempInteractible = Cast<AInteractibleBase>(checkLine.GetActor());
+
+	if (tempInteractible)
+	{
+		tempInteractible->Interact();
+		
+
+	}
+	
+
 
 	//todo - line trace to interact, create new interactive class ie door, tv, some other stuff
 }
