@@ -14,6 +14,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "ItemBase.h"
 #include "InteractibleBase.h"
+#include "PickupBase.h"
 
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
@@ -26,7 +27,7 @@ ACatBase::ACatBase()
 	PushSphere->SetupAttachment(GetRootComponent());
 
 	MouthAttachment = CreateDefaultSubobject<USphereComponent>("Mouth Attachment");
-	MouthAttachment->SetSphereRadius(10.f);
+	MouthAttachment->SetSphereRadius(200.f);
 	MouthAttachment->SetCollisionProfileName("OverlapAll");
 	MouthAttachment->SetupAttachment(GetRootComponent());
 
@@ -115,7 +116,16 @@ void ACatBase::Interact()
 
 	if (tempInteractible)
 	{
-		tempInteractible->Interact();
+		if (Cast<APickupBase>(tempInteractible))
+		{
+			APickupBase* tempPickup = Cast<APickupBase>(tempInteractible);
+			tempPickup->PickUp(this);
+		}
+		else
+		{
+			tempInteractible->Interact();
+		}
+		
 		
 
 	}

@@ -63,4 +63,10 @@ virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputCompone
 bool LineTraceMethod(FHitResult& OutHit);
 
 
+public:
+
+
+
+	class USphereComponent* GetMouthAttachment() const { return MouthAttachment; }
+	void SetMouthAttachment(class USphereComponent* val) { MouthAttachment = val; }
 };
