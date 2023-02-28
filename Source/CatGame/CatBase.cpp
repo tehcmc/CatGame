@@ -43,6 +43,17 @@ void ACatBase::BeginPlay()
 	
 }
 
+void ACatBase::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	FVector startPoint = MouthAttachment->GetComponentLocation();
+	FVector endpoint = (MouthAttachment->GetForwardVector() * interactRange) + startPoint;
+
+	DrawDebugLine(GetWorld(), startPoint, endpoint, FColor(255, 0, 0), false, -1, 0, 5);
+
+}
+
 void ACatBase::Attack()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Blue, FString::Printf(TEXT("ATTACKED")));
@@ -76,22 +87,7 @@ void ACatBase::Attack()
 
 
 
-void ACatBase::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
 
-	FVector startPoint = MouthAttachment->GetComponentLocation();
-	FVector endpoint = (MouthAttachment->GetForwardVector() * interactRange) + startPoint;
-
-	DrawDebugLine(GetWorld(),startPoint,endpoint,FColor(255, 0, 0),false, -1, 0,5);
-
-}
-
-void ACatBase::PickUp()
-{
-//when cat interacts with an object that can be picked up call this function
-
-}
 
 bool ACatBase::LineTraceMethod(FHitResult& OutHit)
 {
@@ -118,21 +114,59 @@ void ACatBase::Interact()
 	{
 		if (Cast<APickupBase>(tempInteractible))
 		{
-			APickupBase* tempPickup = Cast<APickupBase>(tempInteractible);
-			tempPickup->PickUp(this);
+			PickUpItem(tempInteractible);
 		}
 		else
 		{
 			tempInteractible->Interact();
 		}
-		
-		
-
 	}
-	
+}
+
+void ACatBase::PickUpItem(AInteractibleBase* pickupTemp)
+{
+	//when cat interacts with an object that can be picked up call this function
+				
+				APickupBase* tempPickup = Cast<APickupBase>(pickupTemp);
+	 			GetAttachedActors(AttachedActors);
+	 			if (AttachedActors.IsEmpty())
+	 			{
+					Parameters.AddIgnoredActor(pickupTemp);
+					tempPickup->PickUp(this);
+	 			}
+	 			else
+	 			{
+					Parameters.ClearIgnoredActors();
+					Parameters.AddIgnoredActor(this);
+					Parameters.AddIgnoredActor(tempPickup);
+					APickupBase* heldItem = Cast<APickupBase>(AttachedActors[0]);
+	 				heldItem->Drop(this);
+
+					tempPickup->PickUp(this);
+	 			}
 
 
-	//todo - line trace to interact, create new interactive class ie door, tv, some other stuff
+
+}
+
+void ACatBase::DropItem()
+{
+	GetAttachedActors(AttachedActors);
+
+	GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Blue, FString::Printf(TEXT("DROP ITEM ")));
+	if (!AttachedActors.IsEmpty())
+	{
+		APickupBase* tempPickup = Cast<APickupBase>(AttachedActors[0]);
+		GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow, tempPickup->GetFName().ToString());
+		Parameters.ClearIgnoredActors();
+		Parameters.AddIgnoredActor(this);
+		tempPickup->Drop(this);
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Blue, FString::Printf(TEXT("No elements in attached actor array")));
+	}
+
 }
 
 void ACatBase::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
@@ -147,6 +181,7 @@ void ACatBase::SetupPlayerInputComponent(class UInputComponent* PlayerInputCompo
 
 		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Triggered, this, &ACatBase::Interact);
 
+		EnhancedInputComponent->BindAction(DropAction, ETriggerEvent::Triggered, this, &ACatBase::DropItem);
 	}
 
 }

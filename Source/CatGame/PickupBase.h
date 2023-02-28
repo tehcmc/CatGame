@@ -17,13 +17,14 @@ class CATGAME_API APickupBase : public AInteractibleBase
 	GENERATED_BODY()
 public:
 	void PickUp(ACatBase* catRef);
-
+	void Drop(ACatBase* catRef);
 	
 
 protected:
+UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Interaction")
+void OnDropped();
 
-
-
+UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Interaction")
 void OnPickup();
 
 

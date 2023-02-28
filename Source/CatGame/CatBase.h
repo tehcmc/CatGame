@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "CatGameCharacter.h"
+#include "InteractibleBase.h"
 #include "CatBase.generated.h"
 
 /**
@@ -21,6 +22,8 @@ class CATGAME_API ACatBase : public ACatGameCharacter
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* InteractAction;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* DropAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* SprintAction;
@@ -43,15 +46,21 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 	class USphereComponent* MouthAttachment;
 
+	TArray<AActor*> AttachedActors;
+
+
 	FCollisionQueryParams Parameters;
 
 	virtual void BeginPlay() override;
 
-void Attack();
+	void Attack();
 
-virtual void Tick(float DeltaTime) override;
+	virtual void Tick(float DeltaTime) override;
 
-void PickUp();
+	void PickUpItem(AInteractibleBase* pickupTemp);
+
+	void DropItem();
+
 
 
 
@@ -69,4 +78,6 @@ public:
 
 	class USphereComponent* GetMouthAttachment() const { return MouthAttachment; }
 	void SetMouthAttachment(class USphereComponent* val) { MouthAttachment = val; }
+
+
 };
