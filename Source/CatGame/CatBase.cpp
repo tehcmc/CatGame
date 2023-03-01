@@ -31,6 +31,8 @@ ACatBase::ACatBase()
 	MouthAttachment->SetCollisionProfileName("OverlapAll");
 	MouthAttachment->SetupAttachment(GetRootComponent());
 
+	itemRefMesh = CreateDefaultSubobject<UStaticMeshComponent>("Attached Item reference");
+	itemRefMesh->SetupAttachment(MouthAttachment);
 	Parameters.AddIgnoredActor(this);
 }
 

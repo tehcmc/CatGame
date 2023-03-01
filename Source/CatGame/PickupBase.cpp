@@ -11,6 +11,7 @@ void APickupBase::PickUp(ACatBase* catRef)
 	this->DisableComponentsSimulatePhysics();//disable physics before attaching
 	AttachToActor(catRef,rules);
 	SetActorLocation(catRef->GetMouthAttachment()->GetComponentLocation());
+	SetActorRotation(catRef->GetItemRefMesh()->GetComponentRotation());
 	OnPickup();
 }
 

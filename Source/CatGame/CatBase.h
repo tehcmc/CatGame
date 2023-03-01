@@ -42,6 +42,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 	class USphereComponent* PushSphere;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+	class UStaticMeshComponent* itemRefMesh;
+
 	// cat's mouth, used to attach pickups, also origin for line trace
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 	class USphereComponent* MouthAttachment;
@@ -80,4 +83,6 @@ public:
 	void SetMouthAttachment(class USphereComponent* val) { MouthAttachment = val; }
 
 
+	class UStaticMeshComponent* GetItemRefMesh() const { return itemRefMesh; }
+	void SetItemRefMesh(class UStaticMeshComponent* val) { itemRefMesh = val; }
 };
