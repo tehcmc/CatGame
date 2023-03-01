@@ -73,7 +73,7 @@ void ACatBase::Attack()
 			UPrimitiveComponent* Primitive = tempActor->FindComponentByClass<UPrimitiveComponent>();
 			if (Primitive)
 			{
-
+				tempActor->OnHit();
 				float randPush;
 				randPush= FMath::RandRange(pushForce, (pushForce*1.5f));
 
@@ -131,6 +131,7 @@ void ACatBase::PickUpItem(AInteractibleBase* pickupTemp)
 	 			GetAttachedActors(AttachedActors);
 	 			if (AttachedActors.IsEmpty())
 	 			{
+					
 					Parameters.AddIgnoredActor(pickupTemp);
 					tempPickup->PickUp(this);
 	 			}

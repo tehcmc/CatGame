@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/SceneComponent.h"
 #include "ItemBase.h"
-
+#include "ItemPool.h"
 #include "SpawnComponent.generated.h"
 
 
@@ -25,12 +25,12 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-	UPROPERTY(EditAnywhere, Category = "Config")
 	TSubclassOf<class AItemBase> spawnItem;
 
+	AItemPool* ItemPoolRef;
 
 	UPROPERTY(EditAnywhere)
-		TArray<TSubclassOf<class AItemBase>> ItemPool;
+	TArray<TSubclassOf<AItemBase>>spawnPool;
 //	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 //	class USphereComponent* SpawnArea;
 
@@ -38,6 +38,7 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Config")
 	SpawnType SpawnerSize = SpawnType::IT_Med;
 
+	bool SetupSpawnPool();
 
 public:	
 	// Called every frame

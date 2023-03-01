@@ -1,6 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "ItemBase.h"
 //twastawtawtawrwsdawsdas
 // Sets default values
@@ -11,6 +10,9 @@ AItemBase::AItemBase()
 
 	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Item Mesh"));
 	MeshComponent->SetupAttachment(RootComponent);
+
+
+	
 }
 
 // Called when the game starts or when spawned
@@ -24,6 +26,11 @@ void AItemBase::BeginPlay()
 void AItemBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+}
+
+void AItemBase::OnHit_Implementation()
+{
 
 }
 
