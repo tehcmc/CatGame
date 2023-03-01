@@ -69,11 +69,12 @@ void ACatBase::Attack()
 		AItemBase* tempActor = Cast<AItemBase>(Actor);
 		if (tempActor)
 		{
+			tempActor->OnHit();
 			GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow, tempActor->GetFName().ToString());
 			UPrimitiveComponent* Primitive = tempActor->FindComponentByClass<UPrimitiveComponent>();
 			if (Primitive)
 			{
-				tempActor->OnHit();
+				;
 				float randPush;
 				randPush= FMath::RandRange(pushForce, (pushForce*1.5f));
 
