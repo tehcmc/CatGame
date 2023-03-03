@@ -32,8 +32,10 @@ protected:
 	
 	UPROPERTY(EditAnywhere, Category = "Config")
 	SpawnType ItemSize = SpawnType::IT_Med;
-	
+	UPROPERTY(EditAnywhere, Category = "Config")
+	int ScoreValue = 100;
 
+	bool HasScored = false;//checks if this item has given score, has it been "destroyed"
 		
 public:	
 	// Called every frame
@@ -41,6 +43,8 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Interaction")
 	void OnHit();
+	
+	void HitScoreBounds();
 
 public:
 	SpawnType GetItemSize() const { return ItemSize; }

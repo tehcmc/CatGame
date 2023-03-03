@@ -6,6 +6,9 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
 #include "Components/SphereComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "Components/PostProcessComponent.h"
+
 
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
@@ -21,6 +24,7 @@
 
 ACatBase::ACatBase()
 {
+
 	PushSphere = CreateDefaultSubobject<USphereComponent>("PushSphere");
 	PushSphere->SetSphereRadius(200.f);
 	PushSphere->SetCollisionProfileName("OverlapAll");
@@ -34,6 +38,7 @@ ACatBase::ACatBase()
 	itemRefMesh = CreateDefaultSubobject<UStaticMeshComponent>("Attached Item reference");
 	itemRefMesh->SetupAttachment(MouthAttachment);
 	Parameters.AddIgnoredActor(this);
+
 }
 
 void ACatBase::BeginPlay()
@@ -53,6 +58,20 @@ void ACatBase::Tick(float DeltaTime)
 	FVector endpoint = (MouthAttachment->GetForwardVector() * interactRange) + startPoint;
 
 	DrawDebugLine(GetWorld(), startPoint, endpoint, FColor(255, 0, 0), false, -1, 0, 5);
+	FindClosestPickup();
+	if (itemRef && !itemRef->GetPickedUp())
+	{
+		if (FindClosestPickup() <= interactRange && FindClosestPickup() > 0)
+		{
+			itemRef->GetOutlineComponent()->bEnabled = true;
+		}
+		else
+		{
+			itemRef->GetOutlineComponent()->bEnabled = false;
+		}
+
+	}
+	
 
 }
 
@@ -72,11 +91,9 @@ void ACatBase::Attack()
 		if (tempActor)
 		{
 			tempActor->OnHit();
-			GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow, tempActor->GetFName().ToString());
 			UPrimitiveComponent* Primitive = tempActor->FindComponentByClass<UPrimitiveComponent>();
 			if (Primitive)
 			{
-				;
 				float randPush;
 				randPush= FMath::RandRange(pushForce, (pushForce*1.5f));
 
@@ -112,45 +129,90 @@ void ACatBase::Interact()
 
 	AInteractibleBase* tempInteractible;
 	tempInteractible = Cast<AInteractibleBase>(checkLine.GetActor());
-
-	if (tempInteractible)
+	APickupBase* tempPickup = Cast<APickupBase>(itemRef);
+	if (FindClosestPickup() <= interactRange && FindClosestPickup() > 0)
 	{
-		if (Cast<APickupBase>(tempInteractible))
+		if (tempPickup && !tempPickup->GetPickedUp())
 		{
-			PickUpItem(tempInteractible);
+			
+			PickUpItem(tempPickup);
 		}
 		else
 		{
-			tempInteractible->Interact();
+
+			GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Green, FString::Printf(TEXT("NO ITEM")));
 		}
 	}
+	else if (tempInteractible)
+	{
+		tempInteractible->Interact();
+	}
+
+
 }
 
-void ACatBase::PickUpItem(AInteractibleBase* pickupTemp)
+void ACatBase::PickUpItem(APickupBase* pickupTemp)
 {
 	//when cat interacts with an object that can be picked up call this function
 				
-				APickupBase* tempPickup = Cast<APickupBase>(pickupTemp);
 	 			GetAttachedActors(AttachedActors);
 	 			if (AttachedActors.IsEmpty())
 	 			{
 					
 					Parameters.AddIgnoredActor(pickupTemp);
-					tempPickup->PickUp(this);
+					pickupTemp->PickUp(this);
+					pickupTemp->GetOutlineComponent()->bEnabled=false;
+
 	 			}
 	 			else
 	 			{
 					Parameters.ClearIgnoredActors();
 					Parameters.AddIgnoredActor(this);
-					Parameters.AddIgnoredActor(tempPickup);
+					Parameters.AddIgnoredActor(pickupTemp);
 					APickupBase* heldItem = Cast<APickupBase>(AttachedActors[0]);
 	 				heldItem->Drop(this);
 
-					tempPickup->PickUp(this);
+					pickupTemp->PickUp(this);
 	 			}
 
 
 
+}
+
+float ACatBase::FindClosestPickup()
+{
+
+	class AActor* closestPickup = nullptr;
+	AActor* MyOwner = GetOwner();
+	TArray<AActor*> foundPickups;
+	
+	
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), APickupBase::StaticClass(), foundPickups);
+		int arraysize = foundPickups.Num();
+		float currentClosestDistance = TNumericLimits<float>::Max();
+		GEngine->AddOnScreenDebugMessage(-1, 0.01, FColor::Blue, FString::Printf(TEXT("array size: %i"), arraysize));
+		for (int i = 0; i < foundPickups.Num(); i++)
+		{
+		
+			APickupBase* tempPickup = Cast<APickupBase>(foundPickups[i]); 
+
+			float distance = DistanceBetween(this,foundPickups[i]);
+
+			GEngine->AddOnScreenDebugMessage(-1, 0.01, FColor::Blue, FString::Printf(TEXT("%f"), distance));
+			if (distance < currentClosestDistance && tempPickup && !tempPickup->GetPickedUp())
+			{
+
+				currentClosestDistance = distance;
+				closestPickup = foundPickups[i];
+				GEngine->AddOnScreenDebugMessage(-1, 0.01, FColor::Cyan, FString::Printf(TEXT("closest %f"), currentClosestDistance));
+				itemRef = tempPickup;
+			
+				return currentClosestDistance;
+
+			}
+
+		}
+		return 0.f;
 }
 
 void ACatBase::DropItem()
@@ -171,6 +233,11 @@ void ACatBase::DropItem()
 		GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Blue, FString::Printf(TEXT("No elements in attached actor array")));
 	}
 
+}
+
+float ACatBase::DistanceBetween(AActor* A, AActor* B)
+{
+	return (A->GetActorLocation() - B->GetActorLocation()).Size();
 }
 
 void ACatBase::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)

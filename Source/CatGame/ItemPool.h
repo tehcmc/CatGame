@@ -30,7 +30,7 @@ public:
 public:
 	TArray<TSubclassOf<class AItemBase>> GetItemPool() const { return ItemPool; }
 
-	AItemBase* GetItemAt(int i){ return Cast<AItemBase>(ItemPool[i]); }
+	class AItemBase* GetItemAt(int i){ return Cast<AItemBase>(ItemPool[i]); }
 
 	void SetItemPool(TArray<TSubclassOf<class AItemBase>> val) { ItemPool = val; }
 

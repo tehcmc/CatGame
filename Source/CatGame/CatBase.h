@@ -42,6 +42,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 	class USphereComponent* PushSphere;
 
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 	class UStaticMeshComponent* itemRefMesh;
 
@@ -49,6 +50,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 	class USphereComponent* MouthAttachment;
 
+	int score =0;
 	TArray<AActor*> AttachedActors;
 
 
@@ -60,11 +62,14 @@ protected:
 
 	virtual void Tick(float DeltaTime) override;
 
-	void PickUpItem(AInteractibleBase* pickupTemp);
+	void PickUpItem(class APickupBase* pickupTemp);
+
+	class APickupBase* itemRef=nullptr;
+	float FindClosestPickup();
 
 	void DropItem();
 
-
+	float DistanceBetween(AActor* A, AActor* B);
 
 
 void Interact();
@@ -85,4 +90,9 @@ public:
 
 	class UStaticMeshComponent* GetItemRefMesh() const { return itemRefMesh; }
 	void SetItemRefMesh(class UStaticMeshComponent* val) { itemRefMesh = val; }
+
+	UFUNCTION(BlueprintCallable, Category = "Score")
+	int GetScore() const { return score; }
+	UFUNCTION(BlueprintCallable, Category = "Score")
+	void SetScore(int val) { score = val; }
 };

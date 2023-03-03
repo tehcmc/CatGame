@@ -34,3 +34,13 @@ void AItemBase::OnHit_Implementation()
 
 }
 
+void AItemBase::HitScoreBounds()
+{
+	if (!HasScored)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Blue, FString::Printf(TEXT("SCORE UP!!!!!!!!!!!!!!!!!")));
+		HasScored = true;
+	}
+
+}
+
