@@ -33,7 +33,7 @@ ACatBase::ACatBase()
 	MouthAttachment = CreateDefaultSubobject<USphereComponent>("Mouth Attachment");
 	MouthAttachment->SetSphereRadius(200.f);
 	MouthAttachment->SetCollisionProfileName("OverlapAll");
-	MouthAttachment->SetupAttachment(GetRootComponent());
+	MouthAttachment->SetupAttachment(GetMesh(), TEXT("Head1Socket"));
 
 	itemRefMesh = CreateDefaultSubobject<UStaticMeshComponent>("Attached Item reference");
 	itemRefMesh->SetupAttachment(MouthAttachment);
@@ -129,13 +129,16 @@ void ACatBase::Interact()
 
 	AInteractibleBase* tempInteractible;
 	tempInteractible = Cast<AInteractibleBase>(checkLine.GetActor());
-	APickupBase* tempPickup = Cast<APickupBase>(itemRef);
+
+
+
+
 	if (FindClosestPickup() <= interactRange && FindClosestPickup() > 0)
 	{
-		if (tempPickup && !tempPickup->GetPickedUp())
+		if (itemRef && !itemRef->GetPickedUp())
 		{
 			
-			PickUpItem(tempPickup);
+			PickUpItem(itemRef);
 		}
 		else
 		{
@@ -143,6 +146,8 @@ void ACatBase::Interact()
 			GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Green, FString::Printf(TEXT("NO ITEM")));
 		}
 	}
+
+
 	else if (tempInteractible)
 	{
 		tempInteractible->Interact();
@@ -191,11 +196,17 @@ float ACatBase::FindClosestPickup()
 		int arraysize = foundPickups.Num();
 		float currentClosestDistance = TNumericLimits<float>::Max();
 		GEngine->AddOnScreenDebugMessage(-1, 0.01, FColor::Blue, FString::Printf(TEXT("array size: %i"), arraysize));
+
+
 		for (int i = 0; i < foundPickups.Num(); i++)
 		{
-		
+			
 			APickupBase* tempPickup = Cast<APickupBase>(foundPickups[i]); 
-
+			if (tempPickup->GetPickedUp()&& foundPickups.Num()>1)
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 0.01, FColor::Green, FString::Printf(TEXT("HELD")));
+				foundPickups.RemoveAt(i);
+			}
 			float distance = DistanceBetween(this,foundPickups[i]);
 
 			GEngine->AddOnScreenDebugMessage(-1, 0.01, FColor::Blue, FString::Printf(TEXT("%f"), distance));

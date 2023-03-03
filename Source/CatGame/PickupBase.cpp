@@ -2,6 +2,7 @@
 #include "PickupBase.h"
 #include "components/StaticMeshComponent.h"
 #include "Components/PostProcessComponent.h"
+#include "CatBase.h"
 #include "Components/SphereComponent.h"
 
 
@@ -22,12 +23,13 @@ void APickupBase::BeginPlay()
 
 void APickupBase::PickUp(ACatBase* catRef)
 {
-
-	FAttachmentTransformRules rules(EAttachmentRule::SnapToTarget, EAttachmentRule::KeepWorld, EAttachmentRule::SnapToTarget, false);
+	//										location						rotation					scale				  weld
+	FAttachmentTransformRules rules(EAttachmentRule::SnapToTarget, EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld,    true  );
 	this->DisableComponentsSimulatePhysics();//disable physics before attaching
-	AttachToActor(catRef,rules);
+	AttachToActor(catRef,rules,TEXT("Head1Socket"));
 	SetActorLocation(catRef->GetMouthAttachment()->GetComponentLocation());
 	SetActorRotation(catRef->GetItemRefMesh()->GetComponentRotation());
+	SetPickedUp(true);
 	OnPickup();
 }
 
@@ -36,6 +38,7 @@ void APickupBase::Drop(ACatBase* catRef)
 	FDetachmentTransformRules rules(FDetachmentTransformRules::KeepWorldTransform);
 	DetachFromActor(rules);
 	SetActorEnableCollision(true);
+	SetPickedUp(false);
 	OnDropped(); 
 }
 
