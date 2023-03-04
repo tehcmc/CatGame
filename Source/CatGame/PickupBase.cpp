@@ -23,12 +23,14 @@ void APickupBase::BeginPlay()
 
 void APickupBase::PickUp(ACatBase* catRef)
 {
-	//										location						rotation					scale				  weld
-	FAttachmentTransformRules rules(EAttachmentRule::SnapToTarget, EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld,    true  );
-	this->DisableComponentsSimulatePhysics();//disable physics before attaching
-	AttachToActor(catRef,rules,TEXT("Head1Socket"));
-	SetActorLocation(catRef->GetMouthAttachment()->GetComponentLocation());
+	//										location						rotation					scale				     weld
+	FAttachmentTransformRules rules(EAttachmentRule::SnapToTarget, EAttachmentRule::KeepRelative, EAttachmentRule::KeepWorld,    true  );
 	SetActorRotation(catRef->GetItemRefMesh()->GetComponentRotation());
+
+	this->DisableComponentsSimulatePhysics();//disable physics before attaching
+	AttachToComponent(catRef->GetItemRefMesh(),rules);
+		//SetActorLocation(catRef->GetMouthAttachment()->GetComponentLocation());
+
 	SetPickedUp(true);
 	OnPickup();
 }

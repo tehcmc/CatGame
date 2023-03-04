@@ -25,6 +25,8 @@
 ACatBase::ACatBase()
 {
 
+	PrimaryActorTick.bCanEverTick = true;
+
 	PushSphere = CreateDefaultSubobject<USphereComponent>("PushSphere");
 	PushSphere->SetSphereRadius(200.f);
 	PushSphere->SetCollisionProfileName("OverlapAll");
@@ -47,7 +49,6 @@ void ACatBase::BeginPlay()
 	Super::BeginPlay();
 	//do new stuff here
 	
-	
 }
 
 void ACatBase::Tick(float DeltaTime)
@@ -59,7 +60,7 @@ void ACatBase::Tick(float DeltaTime)
 
 	DrawDebugLine(GetWorld(), startPoint, endpoint, FColor(255, 0, 0), false, -1, 0, 5);
 	FindClosestPickup();
-	if (itemRef && !itemRef->GetPickedUp())
+	if (itemRef)
 	{
 		if (FindClosestPickup() <= interactRange && FindClosestPickup() > 0)
 		{
@@ -202,11 +203,7 @@ float ACatBase::FindClosestPickup()
 		{
 			
 			APickupBase* tempPickup = Cast<APickupBase>(foundPickups[i]); 
-			if (tempPickup->GetPickedUp()&& foundPickups.Num()>1)
-			{
-				GEngine->AddOnScreenDebugMessage(-1, 0.01, FColor::Green, FString::Printf(TEXT("HELD")));
-				foundPickups.RemoveAt(i);
-			}
+
 			float distance = DistanceBetween(this,foundPickups[i]);
 
 			GEngine->AddOnScreenDebugMessage(-1, 0.01, FColor::Blue, FString::Printf(TEXT("%f"), distance));
@@ -215,12 +212,18 @@ float ACatBase::FindClosestPickup()
 
 				currentClosestDistance = distance;
 				closestPickup = foundPickups[i];
-				GEngine->AddOnScreenDebugMessage(-1, 0.01, FColor::Cyan, FString::Printf(TEXT("closest %f"), currentClosestDistance));
-				itemRef = tempPickup;
 			
-				return currentClosestDistance;
+				itemRef = tempPickup;
+				closestPickup = foundPickups[i];
 
 			}
+			
+		}
+
+		if (closestPickup)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 0.01, FColor::Cyan, FString::Printf(TEXT("closest %f"), currentClosestDistance));
+			return currentClosestDistance;
 
 		}
 		return 0.f;
