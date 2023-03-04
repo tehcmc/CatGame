@@ -196,7 +196,6 @@ float ACatBase::FindClosestPickup()
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), APickupBase::StaticClass(), foundPickups);
 		int arraysize = foundPickups.Num();
 		float currentClosestDistance = TNumericLimits<float>::Max();
-		GEngine->AddOnScreenDebugMessage(-1, 0.01, FColor::Blue, FString::Printf(TEXT("array size: %i"), arraysize));
 
 
 		for (int i = 0; i < foundPickups.Num(); i++)
@@ -205,24 +204,18 @@ float ACatBase::FindClosestPickup()
 			APickupBase* tempPickup = Cast<APickupBase>(foundPickups[i]); 
 
 			float distance = DistanceBetween(this,foundPickups[i]);
-
-			GEngine->AddOnScreenDebugMessage(-1, 0.01, FColor::Blue, FString::Printf(TEXT("%f"), distance));
 			if (distance < currentClosestDistance && tempPickup && !tempPickup->GetPickedUp())
 			{
-
 				currentClosestDistance = distance;
 				closestPickup = foundPickups[i];
-			
 				itemRef = tempPickup;
 				closestPickup = foundPickups[i];
 
 			}
 			
 		}
-
 		if (closestPickup)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 0.01, FColor::Cyan, FString::Printf(TEXT("closest %f"), currentClosestDistance));
 			return currentClosestDistance;
 
 		}
@@ -233,11 +226,10 @@ void ACatBase::DropItem()
 {
 	GetAttachedActors(AttachedActors);
 
-	GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Blue, FString::Printf(TEXT("DROP ITEM ")));
+	
 	if (!AttachedActors.IsEmpty())
 	{
 		APickupBase* tempPickup = Cast<APickupBase>(AttachedActors[0]);
-		GEngine->AddOnScreenDebugMessage(-1, 30.f, FColor::Yellow, tempPickup->GetFName().ToString());
 		Parameters.ClearIgnoredActors();
 		Parameters.AddIgnoredActor(this);
 		tempPickup->Drop(this);
