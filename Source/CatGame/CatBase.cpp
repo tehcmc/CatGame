@@ -48,7 +48,7 @@ void ACatBase::BeginPlay()
 	//call inherited begin play function
 	Super::BeginPlay();
 	//do new stuff here
-	
+	defaultSpeed = GetCharacterMovement()->MaxWalkSpeed;
 }
 
 void ACatBase::Tick(float DeltaTime)
@@ -74,6 +74,18 @@ void ACatBase::Tick(float DeltaTime)
 	}
 	
 
+}
+
+void ACatBase::StartSprint()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Blue, FString::Printf(TEXT("Start Sprint")));
+	GetCharacterMovement()->MaxWalkSpeed = defaultSpeed * sprintMultiplier;
+}
+
+void ACatBase::StopSprint()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Blue, FString::Printf(TEXT("Stop Sprint")));
+	GetCharacterMovement()->MaxWalkSpeed = defaultSpeed;
 }
 
 void ACatBase::Attack()
@@ -162,6 +174,7 @@ void ACatBase::PickUpItem(APickupBase* pickupTemp)
 	//when cat interacts with an object that can be picked up call this function
 				
 	 			GetAttachedActors(AttachedActors);
+
 	 			if (AttachedActors.IsEmpty())
 	 			{
 					
@@ -259,6 +272,10 @@ void ACatBase::SetupPlayerInputComponent(class UInputComponent* PlayerInputCompo
 		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Triggered, this, &ACatBase::Interact);
 
 		EnhancedInputComponent->BindAction(DropAction, ETriggerEvent::Triggered, this, &ACatBase::DropItem);
+
+		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Started, this, &ACatBase::StartSprint);
+
+		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &ACatBase::StopSprint);
 	}
 
 }

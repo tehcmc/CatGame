@@ -37,6 +37,9 @@ protected:
 	float pushForce = 1000.f;
 
 	UPROPERTY(EditAnywhere, Category = "Config")
+	float sprintMultiplier = 1.5f;
+
+	UPROPERTY(EditAnywhere, Category = "Config")
 	float interactRange = 100.f;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
@@ -62,7 +65,9 @@ protected:
 
 	virtual void Tick(float DeltaTime) override;
 
-	void PickUpItem(class APickupBase* pickupTemp);
+	void StartSprint();
+
+	void StopSprint();
 
 	class APickupBase* itemRef=nullptr;
 	float FindClosestPickup();
@@ -70,6 +75,8 @@ protected:
 	void DropItem();
 
 	float DistanceBetween(AActor* A, AActor* B);
+
+	float defaultSpeed = 0;
 
 
 void Interact();
@@ -90,6 +97,14 @@ public:
 
 	class UStaticMeshComponent* GetItemRefMesh() const { return itemRefMesh; }
 	void SetItemRefMesh(class UStaticMeshComponent* val) { itemRefMesh = val; }
+
+
+
+	UFUNCTION(BlueprintCallable, Category = "Config")
+	TArray<AActor*> GetAttachedActorsForBP(){return AttachedActors; }
+
+	UFUNCTION(BlueprintCallable, Category = "Config")
+	void PickUpItem(class APickupBase* pickupTemp);
 
 	UFUNCTION(BlueprintCallable, Category = "Score")
 	int GetScore() const { return score; }
