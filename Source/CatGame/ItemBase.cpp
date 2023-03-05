@@ -1,6 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "ItemBase.h"
+#include "CatBase.h"
+#include "Kismet/GameplayStatics.h"
+
 //twastawtawtawrwsdawsdas
 // Sets default values
 AItemBase::AItemBase()
@@ -43,9 +46,19 @@ void AItemBase::HitScoreBounds()
 {
 	if (!HasScored)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Blue, FString::Printf(TEXT("SCORE UP!!!!!!!!!!!!!!!!!")));
-		HasScored = true;
-		OnScored();
+		
+		APawn* Plr = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+		ACatBase* tempCat = Cast<ACatBase>(Plr);
+
+		if (tempCat)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Blue, FString::Printf(TEXT("SCORE UP!!!!!!!!!!!!!!!!!")));
+			tempCat->SetScore(tempCat->GetScore()+ScoreValue);
+			HasScored = true;
+			OnScored();
+		}
+		
+	
 	}
 
 }

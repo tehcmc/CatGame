@@ -62,13 +62,13 @@ void ACatBase::Tick(float DeltaTime)
 	FindClosestPickup();
 	if (itemRef)
 	{
-		if (FindClosestPickup() <= interactRange && FindClosestPickup() > 0)
+		if (FindClosestPickup() <= interactRange && FindClosestPickup() > 0 && !itemRef->GetPickedUp()	)
 		{
-			itemRef->GetOutlineComponent()->bEnabled = true;
+			itemRef->GetOutlineComponent()->Activate();
 		}
 		else
 		{
-			itemRef->GetOutlineComponent()->bEnabled = false;
+			itemRef->GetOutlineComponent()->Deactivate();
 		}
 
 	}
