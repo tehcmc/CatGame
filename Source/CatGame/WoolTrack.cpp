@@ -45,13 +45,10 @@ bool AWoolTrack::PopulateSplinePoints()
 		{
 			FVector WLoc = SplineComponent->GetLocationAtSplinePoint(i,ESplineCoordinateSpace::Local);
 
-			GEngine->AddOnScreenDebugMessage(-1, 20, FColor::Yellow, FString::Printf(TEXT("X Coord %f"), WLoc.X));
-			GEngine->AddOnScreenDebugMessage(-1, 20, FColor::Yellow, FString::Printf(TEXT("Y Coord %f"), WLoc.Y));
-
 			SplinePoints[i] = NewObject<USphereComponent>(this);
 			SplinePoints[i]->AttachToComponent(SplineComponent,rules);
 			SplinePoints[i]->SetRelativeLocation(WLoc);
-			SplinePoints[i]->SetSphereRadius(200.f);
+			SplinePoints[i]->SetSphereRadius(20.f);
 			SplinePoints[i]->SetVisibility(true);
 			SplinePoints[i]->SetHiddenInGame(false);
 		}

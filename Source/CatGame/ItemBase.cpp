@@ -2,6 +2,7 @@
 
 #include "ItemBase.h"
 #include "CatBase.h"
+#include "SpawnpointBase.h"
 #include "Kismet/GameplayStatics.h"
 
 //twastawtawtawrwsdawsdas
@@ -62,4 +63,23 @@ void AItemBase::HitScoreBounds()
 	}
 
 }
+
+void AItemBase::Destroyed()
+{
+
+	ASpawnpointBase* spawnRef = Cast<ASpawnpointBase>(GetOwner());
+	if (spawnRef)
+	{
+		spawnRef;
+		GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Blue, FString::Printf(TEXT("SCORE UP!!!!!!!!!!!!!!!!!")));
+	}
+
+	if (spawnRef && GetWorld())
+	{
+		spawnRef->RespawnItem();
+	}
+	Super::Destroyed();
+}
+
+
 

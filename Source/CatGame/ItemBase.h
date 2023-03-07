@@ -49,6 +49,7 @@ public:
 
 	void HitScoreBounds();
 
+	virtual void Destroyed() override;
 public:
 	SpawnType GetItemSize() const { return ItemSize; }
 	void SetItemSize(SpawnType val) { ItemSize = val; }
