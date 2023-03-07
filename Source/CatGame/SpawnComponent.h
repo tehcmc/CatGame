@@ -38,6 +38,13 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Config")
 	SpawnType SpawnerSize = SpawnType::IT_Med;
 
+	UPROPERTY(EditAnywhere, Category = "Config")
+	bool manualSpawn = false;
+
+	UPROPERTY(EditAnywhere, Category = "Config")
+	bool respawnable = false;
+
+
 	bool SetupSpawnPool();
 
 public:	

@@ -58,9 +58,11 @@ protected:
 
 		/** Move Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-		class UInputAction* RollAction;
+	class UInputAction* RollAction;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-		class UInputAction* BounceAction;
+	class UInputAction* BounceAction;
+	UPROPERTY(EditAnywhere, Category = "Config")
+	float torqueMultiplier=1.f;
 
 public:
 	/** Returns Ball subobject **/

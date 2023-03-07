@@ -73,7 +73,7 @@ void ARollerBall::MoveForward(const FInputActionValue& Value)
 	FVector2D MovementVector = Value.Get<FVector2D>();
 	float Val = MovementVector.Y;
 	const FVector Torque = FVector(0.f, Val * RollTorque, 0.f);
-	Ball->AddTorqueInRadians(Torque);
+	Ball->AddTorqueInRadians(Torque*torqueMultiplier);
 }
 
 void ARollerBall::Jump()
