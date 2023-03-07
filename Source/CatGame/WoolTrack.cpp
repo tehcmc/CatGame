@@ -37,11 +37,11 @@ bool AWoolTrack::PopulateSplinePoints()
 	
 	if (SplineComponent)
 	{
-		SplinePoints.SetNum(SplineComponent->GetNumberOfSplinePoints());
+		SplinePoints.SetNum(SplineComponent->GetNumberOfSplinePoints()-2);
 		//										location						rotation					scale				     weld
 
 		FAttachmentTransformRules rules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepRelative, EAttachmentRule::KeepWorld, false);
-		for (int i = 0; i < SplineComponent->GetNumberOfSplinePoints(); i++)
+		for (int i = 0; i < SplineComponent->GetNumberOfSplinePoints()-2; i++)
 		{
 			FVector WLoc = SplineComponent->GetLocationAtSplinePoint(i,ESplineCoordinateSpace::Local);
 
