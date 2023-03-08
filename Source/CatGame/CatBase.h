@@ -98,6 +98,12 @@ public:
 	class UStaticMeshComponent* GetItemRefMesh() const { return itemRefMesh; }
 	void SetItemRefMesh(class UStaticMeshComponent* val) { itemRefMesh = val; }
 
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Interaction")
+	void InteractPressed();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Interaction")
+	void DropPressed();
+
 
 
 	UFUNCTION(BlueprintCallable, Category = "Config")

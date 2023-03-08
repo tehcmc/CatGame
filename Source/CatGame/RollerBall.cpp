@@ -8,6 +8,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Components/InputComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Components/SphereComponent.h"
 #include "Engine/CollisionProfile.h"
 #include "Engine/StaticMesh.h"
 #include "EnhancedInputComponent.h"
@@ -25,6 +26,11 @@ ARollerBall::ARollerBall()
 	Ball->BodyInstance.MaxAngularVelocity = 800.0f;
 	Ball->SetNotifyRigidBodyCollision(true);
 	RootComponent = Ball;
+
+	EntrySphere = CreateDefaultSubobject<USphereComponent>("EntrySphere");
+	EntrySphere->SetSphereRadius(200.f);
+	EntrySphere->SetCollisionProfileName("OverlapAll");
+	EntrySphere->SetupAttachment(GetRootComponent());
 
 	// Create a camera boom attached to the root (ball)
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm0"));

@@ -133,7 +133,7 @@ bool ACatBase::LineTraceMethod(FHitResult& OutHit)
 
 void ACatBase::Interact()
 {
-
+	InteractPressed();
 	FHitResult checkLine;
 
 	GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Green, FString::Printf(TEXT("Interact")));
@@ -166,6 +166,16 @@ void ACatBase::Interact()
 		tempInteractible->Interact();
 	}
 
+
+}
+
+void ACatBase::InteractPressed_Implementation()
+{
+
+}
+
+void ACatBase::DropPressed_Implementation()
+{
 
 }
 
@@ -237,6 +247,8 @@ float ACatBase::FindClosestPickup()
 
 void ACatBase::DropItem()
 {
+
+	DropPressed();
 	GetAttachedActors(AttachedActors);
 
 	

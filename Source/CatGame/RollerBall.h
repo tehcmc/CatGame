@@ -61,6 +61,10 @@ protected:
 	class UInputAction* RollAction;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* BounceAction;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+	class USphereComponent* EntrySphere;//sphere to define ball entry radius
+
 	UPROPERTY(EditAnywhere, Category = "Config")
 	float torqueMultiplier=1.f;
 
