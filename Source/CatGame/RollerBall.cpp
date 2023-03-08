@@ -27,6 +27,21 @@ ARollerBall::ARollerBall()
 	Ball->SetNotifyRigidBodyCollision(true);
 	RootComponent = Ball;
 
+	// Create mesh component for the ball
+	StaticBall = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Static Ball"));
+	StaticBall->BodyInstance.SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
+	StaticBall->SetSimulatePhysics(false);
+	StaticBall->SetNotifyRigidBodyCollision(true);
+	StaticBall->SetupAttachment(Ball);
+
+	CamAttachPoint = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Camera attach point"));
+	CamAttachPoint->BodyInstance.SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
+	CamAttachPoint->SetSimulatePhysics(false);
+	CamAttachPoint->SetNotifyRigidBodyCollision(true);
+	CamAttachPoint->SetupAttachment(StaticBall);
+
+
+
 	EntrySphere = CreateDefaultSubobject<USphereComponent>("EntrySphere");
 	EntrySphere->SetSphereRadius(200.f);
 	EntrySphere->SetCollisionProfileName("OverlapAll");
@@ -34,14 +49,14 @@ ARollerBall::ARollerBall()
 
 	// Create a camera boom attached to the root (ball)
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm0"));
-	SpringArm->SetupAttachment(RootComponent);
+	SpringArm->SetupAttachment(CamAttachPoint);
 	SpringArm->bDoCollisionTest = false;
 	SpringArm->SetUsingAbsoluteRotation(true); // Rotation of the ball should not affect rotation of boom
 	SpringArm->SetRelativeRotation(FRotator(-45.f, 0.f, 0.f));
 	SpringArm->TargetArmLength = 1200.f;
 	SpringArm->bEnableCameraLag = false;
 	SpringArm->CameraLagSpeed = 3.f;
-
+//	SpringArm->bUsePawnControlRotation = true;
 	// Create a camera and attach to boom
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera0"));
 	Camera->SetupAttachment(SpringArm, USpringArmComponent::SocketName);

@@ -29,6 +29,13 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class USplineComponent* SplineComponent;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+		class UStaticMesh* SplineStaticMesh;
+
+	//enum class ESplineMeshAxis MeshAxis;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	TArray<class USplineMeshComponent*> splineMeshComp;
 	
 
 public:	

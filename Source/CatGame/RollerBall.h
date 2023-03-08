@@ -15,6 +15,13 @@ class CATGAME_API ARollerBall : public ACatGameCharacter
 		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Ball, meta = (AllowPrivateAccess = "true"))
 		class UStaticMeshComponent* Ball;
 
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Ball, meta = (AllowPrivateAccess = "true"))
+		class UStaticMeshComponent* StaticBall;
+
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Ball, meta = (AllowPrivateAccess = "true"))
+		class UStaticMeshComponent* CamAttachPoint;
 	/** Spring arm for positioning the camera above the ball */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Ball, meta = (AllowPrivateAccess = "true"))
 		class USpringArmComponent* SpringArm;

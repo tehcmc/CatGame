@@ -3,7 +3,7 @@
 #include "WoolTrack.h"
 #include "Components/SplineComponent.h"
 #include "Components/SphereComponent.h"
-
+#include "Components/SplineMeshComponent.h"
 
 // Sets default values
 AWoolTrack::AWoolTrack()
@@ -20,7 +20,7 @@ void AWoolTrack::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	PopulateSplinePoints();
+	//PopulateSplinePoints();
 
 
 }
@@ -35,22 +35,46 @@ bool AWoolTrack::PopulateSplinePoints()
 	//	populate sphere collider array with spawned spheres
 	//  when ball collides with collider at array entry i delete spline point i (i -1 if that looks better
 	
+
+
+
+
 	if (SplineComponent)
 	{
-		SplinePoints.SetNum(SplineComponent->GetNumberOfSplinePoints()-2);
 		//										location						rotation					scale				     weld
-
-		FAttachmentTransformRules rules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepRelative, EAttachmentRule::KeepWorld, false);
+	
+		FAttachmentTransformRules rules(EAttachmentRule::KeepRelative, EAttachmentRule::KeepRelative, EAttachmentRule::KeepRelative, true);
 		for (int i = 0; i < SplineComponent->GetNumberOfSplinePoints()-2; i++)
 		{
-			FVector WLoc = SplineComponent->GetLocationAtSplinePoint(i,ESplineCoordinateSpace::Local);
+			USplineMeshComponent* tempComp;
+			USphereComponent* tempSphere;
+			FVector startloc = SplineComponent->GetLocationAtSplinePoint(i, ESplineCoordinateSpace::Local);
 
-			SplinePoints[i] = NewObject<USphereComponent>(this);
-			SplinePoints[i]->AttachToComponent(SplineComponent,rules);
-			SplinePoints[i]->SetRelativeLocation(WLoc);
-			SplinePoints[i]->SetSphereRadius(20.f);
-			SplinePoints[i]->SetVisibility(true);
-			SplinePoints[i]->SetHiddenInGame(false);
+			FVector endloc = SplineComponent->GetLocationAtSplinePoint(i+1, ESplineCoordinateSpace::Local);
+
+			FVector startTan = SplineComponent->GetTangentAtSplinePoint(i, ESplineCoordinateSpace::Local);
+			FVector endTan = SplineComponent->GetTangentAtSplinePoint(i+1, ESplineCoordinateSpace::Local);
+			
+			tempSphere = NewObject<USphereComponent>(this);
+			tempSphere->SetRelativeLocation(endloc);
+			tempSphere->SetSphereRadius(20.f);
+			tempSphere->SetVisibility(true);
+			tempSphere->SetHiddenInGame(false);
+
+			tempSphere->AttachToComponent(SplineComponent, rules);
+			SplinePoints.Add(tempSphere);
+
+
+
+			tempComp = NewObject<USplineMeshComponent>(this);
+			tempComp->SetStaticMesh(SplineStaticMesh);
+		//	tempComp->GetForwardAxis(MeshAxis,true);
+			tempComp->SetStartAndEnd(startloc,endloc,startTan,endTan,true);
+			
+
+			splineMeshComp.Add(tempComp);
+
+
 		}
 		
 		return true;
