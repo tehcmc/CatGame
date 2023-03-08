@@ -63,7 +63,13 @@ void ARollerBall::SetupPlayerInputComponent(class UInputComponent* PlayerInputCo
 		EnhancedInputComponent->BindAction(RollAction, ETriggerEvent::Triggered, this, &ARollerBall::MoveForward);
 		EnhancedInputComponent->BindAction(RollAction, ETriggerEvent::Triggered, this, &ARollerBall::MoveRight);
 		EnhancedInputComponent->BindAction(BounceAction, ETriggerEvent::Started, this, &ARollerBall::Jump);
+		EnhancedInputComponent->BindAction(ExitAction,ETriggerEvent::Started,this,&ARollerBall::ExitPressed);
 	}
+}
+
+void ARollerBall::ExitPressed_Implementation()
+{
+
 }
 
 void ARollerBall::MoveRight(const FInputActionValue& Value)
