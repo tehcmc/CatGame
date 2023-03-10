@@ -13,6 +13,9 @@ AWoolTrack::AWoolTrack()
 	SplineComponent = CreateDefaultSubobject<USplineComponent>(TEXT("Spline Component"));
 	SplineComponent->SetupAttachment(RootComponent);
 
+
+
+
 }
 
 // Called when the game starts or when spawned
@@ -38,18 +41,20 @@ bool AWoolTrack::PopulateSplinePoints()
 
 
 
-
 	if (SplineComponent)
 	{
 		//										location						rotation					scale				     weld
-	
+		splineMeshComp.Empty();
+		SplinePoints.Empty();
+
+
 		FAttachmentTransformRules rules(EAttachmentRule::KeepRelative, EAttachmentRule::KeepRelative, EAttachmentRule::KeepRelative, true);
 		for (int i = 0; i < SplineComponent->GetNumberOfSplinePoints()-2; i++)
 		{
 			USplineMeshComponent* tempComp;
 			USphereComponent* tempSphere;
-			FVector startloc = SplineComponent->GetLocationAtSplinePoint(i, ESplineCoordinateSpace::Local);
 
+			FVector startloc = SplineComponent->GetLocationAtSplinePoint(i, ESplineCoordinateSpace::Local);
 			FVector endloc = SplineComponent->GetLocationAtSplinePoint(i+1, ESplineCoordinateSpace::Local);
 
 			FVector startTan = SplineComponent->GetTangentAtSplinePoint(i, ESplineCoordinateSpace::Local);
@@ -57,7 +62,7 @@ bool AWoolTrack::PopulateSplinePoints()
 			
 			tempSphere = NewObject<USphereComponent>(this);
 			tempSphere->SetRelativeLocation(endloc);
-			tempSphere->SetSphereRadius(20.f);
+			tempSphere->SetSphereRadius(200.f);
 			tempSphere->SetVisibility(true);
 			tempSphere->SetHiddenInGame(false);
 
@@ -68,8 +73,8 @@ bool AWoolTrack::PopulateSplinePoints()
 
 			tempComp = NewObject<USplineMeshComponent>(this);
 			tempComp->SetStaticMesh(SplineStaticMesh);
-		//	tempComp->GetForwardAxis(MeshAxis,true);
-			tempComp->SetStartAndEnd(startloc,endloc,startTan,endTan,true);
+			tempComp->SetForwardAxis(ESplineMeshAxis::Z,true);
+			tempComp->SetStartAndEnd(startloc, startTan, endloc,endTan,true);
 			
 
 			splineMeshComp.Add(tempComp);
@@ -80,6 +85,12 @@ bool AWoolTrack::PopulateSplinePoints()
 		return true;
 	}
 	return false;
+}
+
+void AWoolTrack::OnConstruction(const FTransform& Transform)
+{
+//	PopulateSplinePoints();
+	
 }
 
 // Called every frame

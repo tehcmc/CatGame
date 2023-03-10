@@ -179,6 +179,11 @@ void ACatBase::DropPressed_Implementation()
 
 }
 
+void ACatBase::ScoreChanged_Implementation()
+{
+
+}
+
 void ACatBase::PickUpItem(APickupBase* pickupTemp)
 {
 	//when cat interacts with an object that can be picked up call this function
@@ -206,6 +211,12 @@ void ACatBase::PickUpItem(APickupBase* pickupTemp)
 
 
 
+}
+
+void ACatBase::SetScore(int val)
+{
+	score = val;  
+	ScoreChanged(); 
 }
 
 float ACatBase::FindClosestPickup()

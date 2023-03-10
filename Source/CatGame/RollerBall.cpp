@@ -58,6 +58,8 @@ ARollerBall::ARollerBall()
 	SpringArm->CameraLagSpeed = 3.f;
 //	SpringArm->bUsePawnControlRotation = true;
 	// Create a camera and attach to boom
+
+
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera0"));
 	Camera->SetupAttachment(SpringArm, USpringArmComponent::SocketName);
 	Camera->bUsePawnControlRotation = false; // We don't want the controller rotating the camera
@@ -89,18 +91,50 @@ void ARollerBall::ExitPressed_Implementation()
 
 void ARollerBall::MoveRight(const FInputActionValue& Value)
 {
-	FVector2D MovementVector = Value.Get<FVector2D>();
-	float Val = MovementVector.X;
-	const FVector Torque = FVector(-1.f * Val * RollTorque, 0.f, 0.f);
-	Ball->AddTorqueInRadians(Torque);
+// 	FVector2D MovementVector = Value.Get<FVector2D>();
+// 	float Val = MovementVector.X;
+// 
+// 	GetSpringArm()->GetForwardVector();
+// 
+// 
+// 	
+// 	FVector testvec = GetSpringArm()->GetForwardVector();
+// 	FVector plane = FVector(0.f,0.f,1.f);
+// 	
+// 	FVector planeTest = FVector::VectorPlaneProject(testvec,plane);
+// 	planeTest.Normalize(0.0001f);
+// 
+// 	const FVector Torque = FVector(planeTest.X*-torqueMultiplier, planeTest.Y*-torqueMultiplier, planeTest.Z- torqueMultiplier);
+// 
+// 
+// 	Ball->AddTorqueInRadians(Torque);
+
 }
 
 void ARollerBall::MoveForward(const FInputActionValue& Value)
 {
 	FVector2D MovementVector = Value.Get<FVector2D>();
-	float Val = MovementVector.Y;
-	const FVector Torque = FVector(0.f, Val * RollTorque, 0.f);
-	Ball->AddTorqueInRadians(Torque*torqueMultiplier);
+	const float DirVal = Value.Get<float>();
+
+	float testval = MovementVector.X * RollTorque;
+	const FVector ForwardDirection = Camera->GetRightVector();
+	float Val = DirVal * RollTorque;
+
+	
+
+	const FVector Torque = ForwardDirection*testval;//FVector(0.f, ForwardDirection.Y * Val, 0.f);
+
+
+
+
+
+
+
+
+
+	Ball->AddTorqueInRadians(ForwardDirection,TEXT("None"),true);
+
+
 }
 
 void ARollerBall::Jump()

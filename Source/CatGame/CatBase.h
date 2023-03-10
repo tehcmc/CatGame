@@ -104,6 +104,8 @@ public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Interaction")
 	void DropPressed();
 
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Interaction")
+	void ScoreChanged();
 
 
 	UFUNCTION(BlueprintCallable, Category = "Config")
@@ -115,5 +117,5 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Score")
 	int GetScore() const { return score; }
 	UFUNCTION(BlueprintCallable, Category = "Score")
-	void SetScore(int val) { score = val; }
+	void SetScore(int val); 
 };
