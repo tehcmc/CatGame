@@ -80,12 +80,12 @@ void ARollerBall::SetupPlayerInputComponent(class UInputComponent* PlayerInputCo
 	{
 
 		EnhancedInputComponent->BindAction(RollAction, ETriggerEvent::Triggered, this, &ARollerBall::MoveForward);
-		EnhancedInputComponent->BindAction(RollAction, ETriggerEvent::Triggered, this, &ARollerBall::MoveRight);
+		EnhancedInputComponent->BindAction(SideRollAction, ETriggerEvent::Triggered, this, &ARollerBall::MoveRight);
 		EnhancedInputComponent->BindAction(BounceAction, ETriggerEvent::Started, this, &ARollerBall::Jump);
 		EnhancedInputComponent->BindAction(ExitAction,ETriggerEvent::Started,this,&ARollerBall::ExitPressed);
 
 		EnhancedInputComponent->BindAction(SpeedUpAction, ETriggerEvent::Started, this, &ARollerBall::StartSpeedUp);
-		EnhancedInputComponent->BindAction(SpeedUpAction, ETriggerEvent::Completed, this, &ARollerBall::StartSpeedUp);
+		EnhancedInputComponent->BindAction(SpeedUpAction, ETriggerEvent::Completed, this, &ARollerBall::StopSpeedUp);
 	}
 }
 
@@ -96,15 +96,13 @@ void ARollerBall::ExitPressed_Implementation()
 
 void ARollerBall::MoveRight(const FInputActionValue& Value)
 {
-// 	const float DirVal = Value.Get<float>();
-// 	FRotator cRot = FRotator(0.f, GetControlRotation().Yaw, 0.f);
-// 	FVector testVec = UKismetMathLibrary::GetForwardVector(cRot);
-// 	float Val = DirVal * RollTorque;
-// 
-// 
-// 
-// 	Ball->AddTorqueInRadians(testVec * Val, TEXT("None"), true);
+	const float DirVal = Value.Get<float>();
+	float Val = DirVal;
+	FVector testVec = Camera->GetForwardVector();
 
+	FVector rollDir = testVec * Val;
+
+	Ball->AddTorqueInRadians(rollDir * -(RollTorque * defaultMult), TEXT("None"), true);
 }
 
 void ARollerBall::MoveForward(const FInputActionValue& Value)
@@ -112,18 +110,12 @@ void ARollerBall::MoveForward(const FInputActionValue& Value)
 
  	FVector2D MovementVector = Value.Get<FVector2D>();
 
-
-
 	const float DirVal = Value.Get<float>();
 	float Val = DirVal;
 	FVector testVec = Camera->GetRightVector();
 
 	FVector rollDir = testVec*Val;
 	
-
-	//Ball->AddForce(testVec * (Val * defaultMult), TEXT("None"), true);
-
-	GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Blue, FString::Printf(TEXT("Input val: %f"),Val));
 	Ball->AddTorqueInRadians(rollDir*(RollTorque*defaultMult),TEXT("None"),true);
 }
 
