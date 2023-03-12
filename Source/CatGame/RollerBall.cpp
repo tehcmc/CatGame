@@ -3,6 +3,8 @@
 
 #include "RollerBall.h"
 
+
+#include "Kismet/KismetMathLibrary.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Camera/CameraComponent.h"
 #include "Components/StaticMeshComponent.h"
@@ -63,7 +65,7 @@ ARollerBall::ARollerBall()
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera0"));
 	Camera->SetupAttachment(SpringArm, USpringArmComponent::SocketName);
 	Camera->bUsePawnControlRotation = false; // We don't want the controller rotating the camera
-
+	defaultMult = 1;
 	// Set up forces
 	RollTorque = 50000000.0f;
 	JumpImpulse = 350000.0f;
@@ -81,6 +83,9 @@ void ARollerBall::SetupPlayerInputComponent(class UInputComponent* PlayerInputCo
 		EnhancedInputComponent->BindAction(RollAction, ETriggerEvent::Triggered, this, &ARollerBall::MoveRight);
 		EnhancedInputComponent->BindAction(BounceAction, ETriggerEvent::Started, this, &ARollerBall::Jump);
 		EnhancedInputComponent->BindAction(ExitAction,ETriggerEvent::Started,this,&ARollerBall::ExitPressed);
+
+		EnhancedInputComponent->BindAction(SpeedUpAction, ETriggerEvent::Started, this, &ARollerBall::StartSpeedUp);
+		EnhancedInputComponent->BindAction(SpeedUpAction, ETriggerEvent::Completed, this, &ARollerBall::StartSpeedUp);
 	}
 }
 
@@ -91,50 +96,35 @@ void ARollerBall::ExitPressed_Implementation()
 
 void ARollerBall::MoveRight(const FInputActionValue& Value)
 {
-// 	FVector2D MovementVector = Value.Get<FVector2D>();
-// 	float Val = MovementVector.X;
-// 
-// 	GetSpringArm()->GetForwardVector();
-// 
-// 
-// 	
-// 	FVector testvec = GetSpringArm()->GetForwardVector();
-// 	FVector plane = FVector(0.f,0.f,1.f);
-// 	
-// 	FVector planeTest = FVector::VectorPlaneProject(testvec,plane);
-// 	planeTest.Normalize(0.0001f);
-// 
-// 	const FVector Torque = FVector(planeTest.X*-torqueMultiplier, planeTest.Y*-torqueMultiplier, planeTest.Z- torqueMultiplier);
+// 	const float DirVal = Value.Get<float>();
+// 	FRotator cRot = FRotator(0.f, GetControlRotation().Yaw, 0.f);
+// 	FVector testVec = UKismetMathLibrary::GetForwardVector(cRot);
+// 	float Val = DirVal * RollTorque;
 // 
 // 
-// 	Ball->AddTorqueInRadians(Torque);
+// 
+// 	Ball->AddTorqueInRadians(testVec * Val, TEXT("None"), true);
 
 }
 
 void ARollerBall::MoveForward(const FInputActionValue& Value)
 {
-	FVector2D MovementVector = Value.Get<FVector2D>();
+
+ 	FVector2D MovementVector = Value.Get<FVector2D>();
+
+
+
 	const float DirVal = Value.Get<float>();
+	float Val = DirVal;
+	FVector testVec = Camera->GetRightVector();
 
-	float testval = MovementVector.X * RollTorque;
-	const FVector ForwardDirection = Camera->GetRightVector();
-	float Val = DirVal * RollTorque;
-
+	FVector rollDir = testVec*Val;
 	
 
-	const FVector Torque = ForwardDirection*testval;//FVector(0.f, ForwardDirection.Y * Val, 0.f);
+	//Ball->AddForce(testVec * (Val * defaultMult), TEXT("None"), true);
 
-
-
-
-
-
-
-
-
-	Ball->AddTorqueInRadians(ForwardDirection,TEXT("None"),true);
-
-
+	GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Blue, FString::Printf(TEXT("Input val: %f"),Val));
+	Ball->AddTorqueInRadians(rollDir*(RollTorque*defaultMult),TEXT("None"),true);
 }
 
 void ARollerBall::Jump()
@@ -146,6 +136,23 @@ void ARollerBall::Jump()
 		bCanJump = false;
 	}
 }
+
+
+void ARollerBall::StartSpeedUp()
+{
+
+defaultMult = torqueMultiplier;
+
+}
+
+
+void ARollerBall::StopSpeedUp()
+{
+
+defaultMult = 1.f;
+
+}
+
 
 void ARollerBall::NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit)
 {
