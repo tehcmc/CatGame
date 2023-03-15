@@ -26,6 +26,20 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	TArray<class USphereComponent*> SplinePoints;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category ="Config", meta = (AllowPrivateAccess = "true"))
+	float scaleInc=0.1;
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	TArray<class USplineMeshComponent*> splineMeshComp;
+
+
+	UFUNCTION()
+		void OverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+		void OverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class USplineComponent* SplineComponent;
 
@@ -35,9 +49,7 @@ protected:
 
 	//enum class ESplineMeshAxis MeshAxis;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	TArray<class USplineMeshComponent*> splineMeshComp;
-	
+
 	void OnConstruction(const FTransform& Transform) override;
 public:	
 	// Called every frame

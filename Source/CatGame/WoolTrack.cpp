@@ -4,6 +4,7 @@
 #include "Components/SplineComponent.h"
 #include "Components/SphereComponent.h"
 #include "Components/SplineMeshComponent.h"
+#include "RollerBall.h"
 
 // Sets default values
 AWoolTrack::AWoolTrack()
@@ -22,8 +23,16 @@ AWoolTrack::AWoolTrack()
 void AWoolTrack::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	//PopulateSplinePoints();
+	int arrayEnd = SplinePoints.Num() - 1;
+	for (int i = arrayEnd; i >= 0; i--)
+	{
+	GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Yellow, FString::Printf(TEXT("Array Entry: %i"), i));
+	SplinePoints[i]->OnComponentBeginOverlap.AddDynamic(this, &AWoolTrack::OverlapBegin);
+	SplinePoints[i]->OnComponentEndOverlap.AddDynamic(this, &AWoolTrack::OverlapEnd);
+
+	}
+
+
 
 
 }
@@ -85,6 +94,56 @@ bool AWoolTrack::PopulateSplinePoints()
 		return true;
 	}
 	return false;
+}
+
+
+
+void AWoolTrack::OverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	ARollerBall* tempBall = Cast<ARollerBall>(OtherActor);
+	USphereComponent* tempPoint = Cast<USphereComponent>(OverlappedComponent);
+	int arrayEnd = SplinePoints.Num() - 1;
+	GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Blue, FString::Printf(TEXT("Array Size: %i"), SplinePoints.Num() - 1));
+	for (int i = arrayEnd; i >=0; i--)
+	{
+	
+		if (SplinePoints[i] && tempPoint == SplinePoints[i])
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Blue, FString::Printf(TEXT("Array Entry: %i"), i));
+			if (splineMeshComp[i] && !splineMeshComp[i]->IsVisible()&& tempPoint!= SplinePoints[arrayEnd])
+			{
+
+				//attach rope to point, add rope first lol
+
+				splineMeshComp[i+1]->SetVisibility(false);
+				SplinePoints[i]->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+				tempBall->SetActorRelativeScale3D(tempBall->GetActorRelativeScale3D()+scaleInc);
+
+			
+
+				
+			}
+			else if (tempPoint == SplinePoints[arrayEnd] && !splineMeshComp[i]->IsVisible())
+			{
+
+				GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Blue, FString::Printf(TEXT("LAST CCOMP")));
+				SplinePoints[i]->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+				tempBall->SetActorRelativeScale3D(tempBall->GetActorRelativeScale3D() + scaleInc);
+				SetLifeSpan(0.1f);
+				Destroy();
+
+			}
+		}
+		
+
+	}
+
+}
+
+void AWoolTrack::OverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+
 }
 
 void AWoolTrack::OnConstruction(const FTransform& Transform)
