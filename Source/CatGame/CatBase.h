@@ -41,6 +41,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Config")
 	float interactRange = 100.f;
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly, Category = "Config")
+	bool isSprinting =  false;
+
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 	class USphereComponent* PushSphere;

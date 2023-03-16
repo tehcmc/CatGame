@@ -24,7 +24,7 @@ void APickupBase::BeginPlay()
 void APickupBase::PickUp(ACatBase* catRef)
 {
 	//										location						rotation					scale				     weld
-	FAttachmentTransformRules rules(EAttachmentRule::SnapToTarget, EAttachmentRule::KeepRelative, EAttachmentRule::KeepWorld,    true  );
+	FAttachmentTransformRules rules(EAttachmentRule::SnapToTarget, EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld,    true  );
 	SetActorRotation(catRef->GetItemRefMesh()->GetComponentRotation());
 
 	this->DisableComponentsSimulatePhysics();//disable physics before attaching

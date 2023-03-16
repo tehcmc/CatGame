@@ -30,6 +30,9 @@ class CATGAME_API ARollerBall : public ACatGameCharacter
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Ball, meta = (AllowPrivateAccess = "true"))
 		class UCameraComponent* Camera;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Ball, meta = (AllowPrivateAccess = "true"))
+		class UCableComponent* woolString;
+		
 public:
 	ARollerBall();
 
@@ -43,6 +46,7 @@ public:
 
 	/** Indicates whether we can currently jump, use to prevent double jumping */
 	bool bCanJump;
+
 
 protected:
 
@@ -99,12 +103,17 @@ protected:
 	float torqueMultiplier=1.f;
 
 public:
+
+	
 	/** Returns Ball subobject **/
 	FORCEINLINE class UStaticMeshComponent* GetBall() const { return Ball; }
 	/** Returns SpringArm subobject **/
 	FORCEINLINE class USpringArmComponent* GetSpringArm() const { return SpringArm; }
 	/** Returns Camera subobject **/
 	FORCEINLINE class UCameraComponent* GetCamera() const { return Camera; }
+
+				class UCableComponent* GetWoolString() const { return woolString; }
+
 };
 
 

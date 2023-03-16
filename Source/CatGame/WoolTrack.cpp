@@ -1,9 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "WoolTrack.h"
+
 #include "Components/SplineComponent.h"
 #include "Components/SphereComponent.h"
 #include "Components/SplineMeshComponent.h"
+#include "CableComponent.h"
 #include "RollerBall.h"
 
 // Sets default values
@@ -112,9 +114,10 @@ void AWoolTrack::OverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* 
 			GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Blue, FString::Printf(TEXT("Array Entry: %i"), i));
 			if (splineMeshComp[i] && !splineMeshComp[i]->IsVisible()&& tempPoint!= SplinePoints[arrayEnd])
 			{
-
+				
 				//attach rope to point, add rope first lol
-
+				tempBall->GetWoolString()->SetAttachEndToComponent(SplinePoints[i+1]);
+				tempBall->GetWoolString()->SetVisibility(true);
 				splineMeshComp[i+1]->SetVisibility(false);
 				SplinePoints[i]->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 

@@ -78,25 +78,26 @@ void ACatBase::Tick(float DeltaTime)
 
 void ACatBase::StartSprint()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Blue, FString::Printf(TEXT("Start Sprint")));
+
+	isSprinting=true;
 	GetCharacterMovement()->MaxWalkSpeed = defaultSpeed * sprintMultiplier;
+
 }
 
 void ACatBase::StopSprint()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Blue, FString::Printf(TEXT("Stop Sprint")));
+	isSprinting=false;
 	GetCharacterMovement()->MaxWalkSpeed = defaultSpeed;
+
 }
 
 void ACatBase::Attack()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Blue, FString::Printf(TEXT("ATTACKED")));
+
 
 	TArray<AActor*> OverlappingActors;
 	PushSphere->GetOverlappingActors(OverlappingActors);
-
 	FVector PushDirection = GetActorForwardVector();
-	
 
 	for (AActor* Actor : OverlappingActors)
 	{
@@ -258,11 +259,8 @@ float ACatBase::FindClosestPickup()
 
 void ACatBase::DropItem()
 {
-
 	DropPressed();
 	GetAttachedActors(AttachedActors);
-
-	
 	if (!AttachedActors.IsEmpty())
 	{
 		APickupBase* tempPickup = Cast<APickupBase>(AttachedActors[0]);
@@ -270,10 +268,7 @@ void ACatBase::DropItem()
 		Parameters.AddIgnoredActor(this);
 		tempPickup->Drop(this);
 	}
-	else
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Blue, FString::Printf(TEXT("No elements in attached actor array")));
-	}
+
 
 }
 

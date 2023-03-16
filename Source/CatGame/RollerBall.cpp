@@ -11,10 +11,12 @@
 #include "Components/InputComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/SphereComponent.h"
-#include "Engine/CollisionProfile.h"
+#include "Engine/CollisionProfile.h" 	
+#include "CableComponent.h"
 #include "Engine/StaticMesh.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+
 
 ARollerBall::ARollerBall()
 {
@@ -42,6 +44,9 @@ ARollerBall::ARollerBall()
 	CamAttachPoint->SetNotifyRigidBodyCollision(true);
 	CamAttachPoint->SetupAttachment(StaticBall);
 
+	woolString = CreateDefaultSubobject<UCableComponent>(TEXT("Wool String"));
+	woolString->SetupAttachment(StaticBall);
+	woolString->SetVisibility(false);
 
 
 	EntrySphere = CreateDefaultSubobject<USphereComponent>("EntrySphere");
@@ -58,18 +63,18 @@ ARollerBall::ARollerBall()
 	SpringArm->TargetArmLength = 1200.f;
 	SpringArm->bEnableCameraLag = false;
 	SpringArm->CameraLagSpeed = 3.f;
-//	SpringArm->bUsePawnControlRotation = true;
-	// Create a camera and attach to boom
-
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera0"));
 	Camera->SetupAttachment(SpringArm, USpringArmComponent::SocketName);
 	Camera->bUsePawnControlRotation = false; // We don't want the controller rotating the camera
 	defaultMult = 1;
-	// Set up forces
+
 	RollTorque = 50000000.0f;
 	JumpImpulse = 350000.0f;
-	bCanJump = true; // Start being able to jump
+	bCanJump = true;
+
+
+
 }
 
 
@@ -102,7 +107,7 @@ void ARollerBall::MoveRight(const FInputActionValue& Value)
 
 	FVector rollDir = testVec * Val;
 
-	Ball->AddTorqueInRadians(rollDir * -(RollTorque * defaultMult), TEXT("None"), true);
+	Ball->AddTorqueInRadians(-(rollDir *(RollTorque * defaultMult)), TEXT("None"), true);
 }
 
 void ARollerBall::MoveForward(const FInputActionValue& Value)
