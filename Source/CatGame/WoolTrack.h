@@ -47,8 +47,14 @@ protected:
 		class UStaticMesh* SplineStaticMesh;
 
 
-	//enum class ESplineMeshAxis MeshAxis;
+		float cableIncrement = 100.f;
 
+	//enum class ESplineMeshAxis MeshAxis;
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Interaction")
+	void PointReached(USphereComponent* IntersectedSphere);
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Interaction")
+	void SplineCompleted();
 
 	void OnConstruction(const FTransform& Transform) override;
 public:	

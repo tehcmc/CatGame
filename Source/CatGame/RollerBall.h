@@ -44,6 +44,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = Ball)
 		float RollTorque;
 
+	/** Torque to apply when trying to roll ball */
+	UPROPERTY(EditAnywhere, Category = Ball)
+		float maxSpeed;
 	/** Indicates whether we can currently jump, use to prevent double jumping */
 	bool bCanJump;
 

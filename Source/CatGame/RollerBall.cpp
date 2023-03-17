@@ -106,8 +106,11 @@ void ARollerBall::MoveRight(const FInputActionValue& Value)
 	FVector testVec = Camera->GetForwardVector();
 
 	FVector rollDir = testVec * Val;
+	if (Ball->GetPhysicsAngularVelocityInDegrees().Length() < maxSpeed)
+	{
+		Ball->AddTorqueInRadians(-(rollDir *(RollTorque * defaultMult)), TEXT("None"), true);
+	}
 
-	Ball->AddTorqueInRadians(-(rollDir *(RollTorque * defaultMult)), TEXT("None"), true);
 }
 
 void ARollerBall::MoveForward(const FInputActionValue& Value)
@@ -120,8 +123,11 @@ void ARollerBall::MoveForward(const FInputActionValue& Value)
 	FVector testVec = Camera->GetRightVector();
 
 	FVector rollDir = testVec*Val;
+	if (Ball->GetPhysicsAngularVelocityInDegrees().Length() < maxSpeed)
+	{
+		Ball->AddTorqueInRadians(rollDir * (RollTorque * defaultMult), TEXT("None"), true);
+	}
 	
-	Ball->AddTorqueInRadians(rollDir*(RollTorque*defaultMult),TEXT("None"),true);
 }
 
 void ARollerBall::Jump()

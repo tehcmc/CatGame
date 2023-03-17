@@ -105,25 +105,30 @@ void AWoolTrack::OverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* 
 	ARollerBall* tempBall = Cast<ARollerBall>(OtherActor);
 	USphereComponent* tempPoint = Cast<USphereComponent>(OverlappedComponent);
 	int arrayEnd = SplinePoints.Num() - 1;
-	GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Blue, FString::Printf(TEXT("Array Size: %i"), SplinePoints.Num() - 1));
 	for (int i = arrayEnd; i >=0; i--)
 	{
 	
-		if (SplinePoints[i] && tempPoint == SplinePoints[i])
+		if (SplinePoints[i] && tempPoint == SplinePoints[i] && tempBall)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Blue, FString::Printf(TEXT("Array Entry: %i"), i));
+	
 			if (splineMeshComp[i] && !splineMeshComp[i]->IsVisible()&& tempPoint!= SplinePoints[arrayEnd])
 			{
 				
+			//	FVector diff = SplinePoints[i]->GetComponentLocation() - SplinePoints[i+1]->GetComponentLocation();
+			//	GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Blue, FString::Printf(TEXT("Dist between: %f "),diff.Length()));
+			//	cableIncrement = diff.Length();
+
+		
+
 				//attach rope to point, add rope first lol
 				tempBall->GetWoolString()->SetAttachEndToComponent(SplinePoints[i+1]);
 				tempBall->GetWoolString()->SetVisibility(true);
 				splineMeshComp[i+1]->SetVisibility(false);
 				SplinePoints[i]->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-
+		//		tempBall->GetWoolString()->CableLength = tempBall->GetWoolString()->CableLength + cableIncrement;
 				tempBall->SetActorRelativeScale3D(tempBall->GetActorRelativeScale3D()+scaleInc);
-
-			
+				PointReached(SplinePoints[i]);
+				
 
 				
 			}
@@ -133,14 +138,25 @@ void AWoolTrack::OverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* 
 				GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Blue, FString::Printf(TEXT("LAST CCOMP")));
 				SplinePoints[i]->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 				tempBall->SetActorRelativeScale3D(tempBall->GetActorRelativeScale3D() + scaleInc);
-				SetLifeSpan(0.1f);
-				Destroy();
-
+				tempBall->GetWoolString()->SetVisibility(false);
+				SplineCompleted();
+				
 			}
 		}
 		
 
 	}
+
+}
+
+
+void AWoolTrack::PointReached_Implementation(USphereComponent* IntersectedSphere)
+{
+
+}
+
+void AWoolTrack::SplineCompleted_Implementation()
+{
 
 }
 
