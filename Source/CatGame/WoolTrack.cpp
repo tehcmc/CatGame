@@ -28,7 +28,7 @@ void AWoolTrack::BeginPlay()
 	int arrayEnd = SplinePoints.Num() - 1;
 	for (int i = arrayEnd; i >= 0; i--)
 	{
-	GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Yellow, FString::Printf(TEXT("Array Entry: %i"), i));
+	//create overlap binds for each sphere collider (that represent spline points)
 	SplinePoints[i]->OnComponentBeginOverlap.AddDynamic(this, &AWoolTrack::OverlapBegin);
 	SplinePoints[i]->OnComponentEndOverlap.AddDynamic(this, &AWoolTrack::OverlapEnd);
 
@@ -111,31 +111,27 @@ void AWoolTrack::OverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* 
 		if (SplinePoints[i] && tempPoint == SplinePoints[i] && tempBall)
 		{
 	
-			if (splineMeshComp[i] && !splineMeshComp[i]->IsVisible()&& tempPoint!= SplinePoints[arrayEnd])
+			if (splineMeshComp[i] && !splineMeshComp[i]->IsVisible()&& tempPoint!= SplinePoints[arrayEnd])//if the collided point is valid & the spline mesh isn't visible (as previous point should have hidden on collision)
 			{
-				
-			//	FVector diff = SplinePoints[i]->GetComponentLocation() - SplinePoints[i+1]->GetComponentLocation();
-			//	GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Blue, FString::Printf(TEXT("Dist between: %f "),diff.Length()));
-			//	cableIncrement = diff.Length();
 
+				tempBall->GetWoolString()->SetAttachEndToComponent(SplinePoints[i+1]);//attach to next point
+
+				tempBall->GetWoolString()->SetVisibility(true); //redundant after first collision
+
+				splineMeshComp[i+1]->SetVisibility(false);//hide the spline mesh connected between this spline point to the next spline point
+
+
+				SplinePoints[i]->SetCollisionEnabled(ECollisionEnabled::NoCollision);//disable collisions for this point
 		
 
-				//attach rope to point, add rope first lol
-				tempBall->GetWoolString()->SetAttachEndToComponent(SplinePoints[i+1]);
-				tempBall->GetWoolString()->SetVisibility(true);
-				splineMeshComp[i+1]->SetVisibility(false);
-				SplinePoints[i]->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		//		tempBall->GetWoolString()->CableLength = tempBall->GetWoolString()->CableLength + cableIncrement;
-				tempBall->SetActorRelativeScale3D(tempBall->GetActorRelativeScale3D()+scaleInc);
-				PointReached(SplinePoints[i]);
-				
+				tempBall->SetActorRelativeScale3D(tempBall->GetActorRelativeScale3D()+scaleInc);//increase size of ball
 
-				
+				PointReached(SplinePoints[i]);//call blueprint with reference to this point
+
 			}
-			else if (tempPoint == SplinePoints[arrayEnd] && !splineMeshComp[i]->IsVisible())
+			else if (tempPoint == SplinePoints[arrayEnd] && !splineMeshComp[i]->IsVisible()) //if collided point is the final point in the spline
 			{
 
-				GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Blue, FString::Printf(TEXT("LAST CCOMP")));
 				SplinePoints[i]->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 				tempBall->SetActorRelativeScale3D(tempBall->GetActorRelativeScale3D() + scaleInc);
 				tempBall->GetWoolString()->SetVisibility(false);
