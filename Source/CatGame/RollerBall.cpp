@@ -29,7 +29,7 @@ ARollerBall::ARollerBall()
 	Ball->BodyInstance.MassScale = 3.5f;
 	Ball->BodyInstance.MaxAngularVelocity = 800.0f;
 	Ball->SetNotifyRigidBodyCollision(true);
-	RootComponent = Ball;
+
 
 	// Create mesh component for the ball
 	StaticBall = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Static Ball"));
@@ -52,7 +52,7 @@ ARollerBall::ARollerBall()
 	EntrySphere = CreateDefaultSubobject<USphereComponent>("EntrySphere");
 	EntrySphere->SetSphereRadius(200.f);
 	EntrySphere->SetCollisionProfileName("OverlapAll");
-	EntrySphere->SetupAttachment(GetRootComponent());
+	EntrySphere->SetupAttachment(StaticBall);
 
 	// Create a camera boom attached to the root (ball)
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm0"));
@@ -88,9 +88,9 @@ void ARollerBall::SetupPlayerInputComponent(class UInputComponent* PlayerInputCo
 		EnhancedInputComponent->BindAction(SideRollAction, ETriggerEvent::Triggered, this, &ARollerBall::MoveRight);
 		EnhancedInputComponent->BindAction(BounceAction, ETriggerEvent::Started, this, &ARollerBall::Jump);
 		EnhancedInputComponent->BindAction(ExitAction,ETriggerEvent::Started,this,&ARollerBall::ExitPressed);
-
 		EnhancedInputComponent->BindAction(SpeedUpAction, ETriggerEvent::Started, this, &ARollerBall::StartSpeedUp);
 		EnhancedInputComponent->BindAction(SpeedUpAction, ETriggerEvent::Completed, this, &ARollerBall::StopSpeedUp);
+
 	}
 }
 
